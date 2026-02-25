@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PRISMS | Secure Site</title>
+
+  <style>
+    :root{
+      --brand:#2a5298;
+      --dark:#0b1220;
+      --muted:#64748b;
+      --card:#ffffff;
+      --bg:#f6f7fb;
+      --border:#e5e7eb;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#111827;}
+
+    /* LOGIN */
+    #loginPage{
+      min-height:100vh;display:flex;justify-content:center;align-items:center;padding:24px;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+    }
+    #loginBox{
+      width:min(440px,95vw);background:var(--card);border-radius:14px;padding:28px;
+      box-shadow:0 18px 40px rgba(0,0,0,0.25);text-align:center;
+    }
+    .logo{width:120px;height:auto;margin:6px auto 10px;display:block;}
+    .brandTitle{margin:6px 0 18px;letter-spacing:.20em;font-weight:800;color:#0f172a;}
+    input{
+      width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;
+      font-size:15px;outline:none;
+    }
+    input:focus{border-color:#93c5fd;}
+    button{
+      width:100%;padding:12px 14px;border:none;border-radius:10px;background:var(--brand);
+      color:white;font-weight:800;cursor:pointer;font-size:15px;margin-top:12px;
+    }
+    .error{margin-top:10px;color:#b91c1c;font-size:13px;display:none;}
+    .hint{margin-top:8px;font-size:12px;color:var(--muted);}
+
+    /* MAIN SITE */
+    #websiteContent{display:none;}
+    .navbar{
+      position:sticky;top:0;z-index:10;background:var(--dark);color:white;
+      border-bottom:1px solid rgba(255,255,255,0.10);
+    }
+    .navInner{
+      max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:14px;
+    }
+    .navLogo{display:flex;align-items:center;gap:10px;}
+    .navLogo img{width:38px;height:auto;display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.25));}
+    .navLogo span{font-weight:900;letter-spacing:0.20em;}
+
+    .tabs{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:16px;
+  width:100%;
+  margin-top:10px;
+}
+    .tabBtn{
+      background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+      color:white;padding:8px 12px;border-radius:999px;cursor:pointer;font-weight:800;font-size:13px;
+    }
+    .tabBtn.active{background:white;color:var(--dark);border-color:white;}
+
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 16px 40px;}
+    .hero{
+      background:white;border:1px solid var(--border);border-radius:18px;padding:26px;
+      box-shadow:0 10px 25px rgba(15,23,42,0.06);
+    }
+    .hero h1{margin:0 0 6px;font-size:28px;}
+    .hero p{margin:0;color:var(--muted);line-height:1.5;}
+
+    .grid{margin-top:16px;display:grid;grid-template-columns:repeat(12,1fr);gap:14px;}
+    .card{
+      grid-column:span 6;background:white;border:1px solid var(--border);border-radius:16px;
+      padding:16px;box-shadow:0 10px 25px rgba(15,23,42,0.05);
+    }
+    .card h3{margin:0 0 8px;}
+    .card p, .card li{color:var(--muted);line-height:1.5;}
+    .card ul{margin:8px 0 0 18px;}
+
+    .panel{display:none;margin-top:18px;}
+    .panel.active{display:block;}
+
+    table{width:100%;border-collapse:collapse;margin-top:10px;}
+    th, td{border:1px solid var(--border);padding:10px;text-align:left;font-size:14px;}
+    th{background:#f8fafc;}
+    footer{margin-top:26px;color:var(--muted);text-align:center;font-size:13px;}
+
+    @media (max-width:900px){
+      .card{grid-column:span 12;}
+    }
+.people{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.person{
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fbfdff;
+}
+
+.personName{
+  font-weight: 800;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: #0f172a;
+}
+
+.personMeta{
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.personLink{
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--brand);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.personLink:hover{
+  text-decoration: underline;
+}
+
+/* Optional: make it 2 columns on wide screens */
+@media (min-width: 900px){
+  .people{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN PAGE -->
+  <div id="loginPage">
+    <div id="loginBox">
+      <img class="logo" src="prisms.png" alt="PRISMS logo">
+      <div class="brandTitle">PRISMS</div>
+
+      <input type="password" id="password" placeholder="Enter passcode" />
+      <button onclick="checkPassword()">Login</button>
+
+      <div id="errorMsg" class="error">Wrong passcode. Try again.</div>
+      <div class="hint">Press Enter after typing your passcode.</div>
+    </div>
+  </div>
+
+  <!-- MAIN WEBSITE -->
+  <div id="websiteContent">
+    <div class="navbar">
+      <div class="navInner">
+        <div class="navLogo">
+          <img src="prisms.png" alt="PRISMS logo">
+          <span>PRISMS</span>
+        </div>
+
+        <div class="tabs">
+          <button class="tabBtn active" onclick="openTab('overview', this)">Overview</button>
+          <button class="tabBtn" onclick="openTab('scope', this)">Scope</button>
+          <button class="tabBtn" onclick="openTab('timeline', this)">Timeline</button>
+          <button class="tabBtn" onclick="openTab('deliverables', this)">Deliverables</button>
+          <button class="tabBtn" onclick="openTab('contacts', this)">Contacts</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+
+      <!-- OVERVIEW -->
+      <div id="overview" class="panel active">
+        <div class="hero">
+          <h1>Alpine Coaster Development at Veterans Boulevard</h1>
+          <p>Proposed commercial development for an Alpine Coaster attraction located off Veterans Boulevard in Pigeon Forge, Tennessee. The property is on a hill and contains an existing stream.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Course</h3>
+            <p>Senior Design Project Course Sequence: CE399S &amp; CE400.</p>
+          </div>
+          <div class="card">
+            <h3>Goal</h3>
+            <p>Provide engineering plans/calculations to support permitting and construction (as a student deliverable package).</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCOPE -->
+      <div id="scope" class="panel">
+        <div class="hero">
+          <h1>Project Scope</h1>
+          <p>Major discipline responsibilities summarized from the drafted scope of work.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Transportation</h3>
+            <ul>
+              <li>Traffic Impact Study; analyze access points and off-site improvements (turn lanes, etc.).</li>
+              <li>Design entry driveways; determine parking count and coordinate with site civil.</li>
+              <li>Fire truck + garbage truck turning movements for compliance.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Site Civil / Stormwater / Utilities</h3>
+            <ul>
+              <li>Site layout + grading coordination.</li>
+              <li>Entrance road + profile.</li>
+              <li>Hydrology + stormwater detention; conveyance sizing.</li>
+              <li>Road stream crossing + hydraulic calcs.</li>
+              <li>Water (domestic + fire) and sanitary sewer design + hydraulic calcs.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Construction / Environmental</h3>
+            <ul>
+              <li>Project schedule + cost estimate.</li>
+              <li>Site-specific SWPPP and ARAP per TDEC requirements.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Geotechnical</h3>
+            <ul>
+              <li>Geotech calculations for retaining walls as needed (driveways, lots, stream crossing, and/or coaster structure).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div id="timeline" class="panel">
+        <div class="hero">
+          <h1>Timeline (Draft)</h1>
+          <p>This timeline is a draft of recommended activities (align with syllabus/Canvas as needed).</p>
+        </div>
+
+        <div class="card" style="grid-column: span 12;">
+          <h3>Major Milestones</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>Week</th>
+                <th>Task</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>First</td><td>3–4</td><td>Kick-off Meeting</td><td>Microsoft Teams</td></tr>
+              <tr><td>First</td><td>3–4</td><td>Tentative Site Visit</td><td>On site</td></tr>
+              <tr><td>First</td><td>4–8</td><td>Site Investigation Efforts</td><td>—</td></tr>
+              <tr><td>First</td><td>6</td><td>Preliminary Design Drawings Due</td><td>—</td></tr>
+              <tr><td>First</td><td>9</td><td>Project Forum (team hosts)</td><td>Varies</td></tr>
+              <tr><td>First</td><td>12</td><td>Preliminary Design Report Due</td><td>—</td></tr>
+              <tr><td>First</td><td>13</td><td>Second Project Forum (team hosts)</td><td>—</td></tr>
+              <tr><td>First</td><td>15</td><td>Response to reviews; Progress Update Meeting</td><td>UT campus / virtual</td></tr>
+              <tr><td>First</td><td>16</td><td>Schematic Design Package Due</td><td>—</td></tr>
+
+              <tr><td>Second</td><td>3</td><td>Reconvening Meeting</td><td>Varies</td></tr>
+              <tr><td>Second</td><td>5</td><td>50% Design Development Package Due</td><td>—</td></tr>
+              <tr><td>Second</td><td>8</td><td>50% Feedback Meeting &amp; Progress Update</td><td>Varies</td></tr>
+              <tr><td>Second</td><td>10</td><td>100% DD Package Due</td><td>—</td></tr>
+              <tr><td>Second</td><td>14</td><td>Final Project Meeting</td><td>—</td></tr>
+              <tr><td>Second</td><td>15</td><td>Final Deliverables Due (95% CD)</td><td>—</td></tr>
+              <tr><td>Second</td><td>15/16</td><td>Showcase Event Celebration</td><td>UT campus</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DELIVERABLES -->
+      <div id="deliverables" class="panel">
+        <div class="hero">
+          <h1>Final Deliverables</h1>
+          <p>Work products listed in the drafted scope of work.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Plans + Design</h3>
+            <ul>
+              <li>Engineering site plans: Site Layout &amp; Paving, Grading, Storm Drainage, Water &amp; Sewer.</li>
+              <li>Geotechnical plans + supporting calculations.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Analyses + Reports</h3>
+            <ul>
+              <li>Traffic Impact Study.</li>
+              <li>Drainage calculations (hydrologic + hydraulic analysis).</li>
+              <li>Hydraulic analysis for water and sanitary sewer systems.</li>
+              <li>SWPPP and ARAP for permitting.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACTS -->
+      <div id="contacts" class="panel">
+        <div class="hero">
+          <h1>Contacts</h1>
+          <p>Client, mentor, and UTK contacts.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Community Partner (Client)</h3>
+            <p><strong>Christopher Golliher, P.E.</strong><br/>Project Manager<br/>865.251.5341<br/><a 												href="mailto:cgolliher@ardurra.com">cgolliher@ardurra.com</a></p>
+          </div>
+
+          <div class="card">
+            <h3>Project Technical Mentor</h3>
+            <p><strong>Blyth Lundberg, E.I.</strong><br/>(865) 251-5350<br/><a href="mailto:blundberg@ardurra.com">blundberg@ardurra.com</a></p>
+          </div>
+
+          <div class="card">
+            <h3>UT Project Contacts</h3>
+            <p><strong>Benjamin Fennell</strong><br/>Teaching Professor<br/>(865) 974-7597<br/><a href="mailto:Benjamin.fennell@utk.edu">Benjamin.fennell@utk.edu</a></p>
+            <p style="margin-top:10px;"><strong>Noah Simmons</strong><br/>Teaching Assistant<br/><a href="mailto:nsimmo12@vols.utk.edu">nsimmo12@vols.utk.edu</a></p>
+          </div>
+
+          <div class="card">
+            <div class="card">
+  <h3>Students</h3>
+
+  <div class="people">
+    <div class="person">
+      <div class="personName">Olivia Bennett</div>
+      <div class="personMeta">Environmental</div>
+      <div class="personMeta">(615) 290-0609</div>
+      <a class="personLink" href="mailto:obennet2@vols.utk.edu">obennet2@vols.utk.edu</a>
+    </div>
+
+    <div class="person">
+      <div class="personName">Irving Chavez Charles</div>
+      <div class="personMeta">Site Civil</div>
+      <div class="personMeta">(865) 824-7155</div>
+      <a class="personLink" href="mailto:ichavezc@vols.utk.edu">ichavezc@vols.utk.edu</a>
+    </div>
+
+    <div class="person">
+      <div class="personName">Makenna Mercer</div>
+      <div class="personMeta">Construction</div>
+      <div class="personMeta">(423) 486-8207</div>
+      <a class="personLink" href="mailto:xrl723@vols.utk.edu">xrl723@vols.utk.edu</a>
+    </div>
+
+    <div class="person">
+      <div class="personName">Sahil Patel</div>
+      <div class="personMeta">Transportation</div>
+      <div class="personMeta">(865) 974-7597</div>
+      <a class="personLink" href="mailto:spate184@vols.utk.edu">spate184@vols.utk.edu</a>
+    </div>
+
+    <div class="person">
+      <div class="personName">Caleb Perruzza</div>
+      <div class="personMeta">Transportation</div>
+      <div class="personMeta">(720) 955-5113</div>
+      <a class="personLink" href="mailto:cperruzz@vols.utk.edu">cperruzz@vols.utk.edu</a>
+    </div>
+
+    <div class="person">
+      <div class="personName">Mason Rice</div>
+      <div class="personMeta">Site Civil</div>
+      <div class="personMeta">(603) 490-4420</div>
+      <a class="personLink" href="mailto:mrice36@vols.utk.edu">mrice36@vols.utk.edu</a>
+    </div>
+
+    <div class="person">
+      <div class="personName">Jaelyn Spears</div>
+      <div class="personMeta">Geotechnical</div>
+      <div class="personMeta">(619) 654-3651</div>
+      <a class="personLink" href="mailto:jspears9@vols.utk.edu">jspears9@vols.utk.edu</a>
+    </div>
+  </div>
+</div>
+          </div>
+        </div>
+      </div>
+
+      <footer>© 2026 PRISMS • Private Site</footer>
+    </div>
+  </div>
+
+  <script>
+    // CHANGE THIS PASSCODE:
+    const correctPassword = "1234";
+
+    function checkPassword(){
+      const entered = document.getElementById("password").value;
+      const err = document.getElementById("errorMsg");
+
+      if(entered === correctPassword){
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("websiteContent").style.display = "block";
+        err.style.display = "none";
+      } else {
+        err.style.display = "block";
+      }
+    }
+
+    document.addEventListener("keydown", function(e){
+      const loginVisible = document.getElementById("loginPage").style.display !== "none";
+      if(e.key === "Enter" && loginVisible) checkPassword();
+    });
+
+    function openTab(tabId, btn){
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+
+      document.querySelectorAll(".tabBtn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    }
+  </script>
+</body>
+</html>
